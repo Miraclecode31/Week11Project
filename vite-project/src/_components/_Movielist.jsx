@@ -1,52 +1,52 @@
-// _components/MovieList.jsx
-
 import React, { useEffect, useState } from "react";
-import SearchBar from './SearchBar'; 
+import SearchBar from "./SearchBar";
+import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is imported
 
 const _MovieList = () => {
-  const [movies, setMovies] = useState([]); // Store fetched movies
-  const [filteredMovies, setFilteredMovies] = useState([]); // Store filtered movies
+const [setMovies] = useState([]); // ✅ Correct way to define the state
+ const [filteredMovies, setFilteredMovies] = useState([]);
+  const [query, setQuery] = useState("");
 
-  // Fetch movies from OMDB API
   useEffect(() => {
-    fetch("http://www.omdbapi.com/?apikey=fc85b922&s=Scar")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fetched movies:", data);
-        setMovies(data.Search || []); // Ensure we set an array of movies
-        setFilteredMovies(data.Search || []); // Set filteredMovies as well
-      })
-      .catch((error) => console.error("Error fetching movies:", error));
-  }, []);
-
-  // Handle search functionality
-  const handleSearch = (query) => {
-    if (!query) {
-      setFilteredMovies(movies); // Show all movies if no search query
-    } else {
-      const filtered = movies.filter((movie) =>
-        movie.Title.toLowerCase().includes(query.toLowerCase()) // Filter based on title
-      );
-      setFilteredMovies(filtered);
+    if (query) {
+      fetch(`http://www.omdbapi.com/?apikey=fc85b922&s=${query}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setMovies(data.Search || []);
+          setFilteredMovies(data.Search || []);
+        })
+        .catch((error) => console.error("Error fetching movies:", error));
     }
+  }, [query]);
+
+  const handleSearch = (newQuery) => {
+    setQuery(newQuery);
   };
 
   return (
-    <div>
-      <h2>Movie List</h2>
-      <SearchBar onSearch={handleSearch} /> {/* Pass the handleSearch function to the SearchBar */}
-      
-      {filteredMovies.length === 0 ? (
-        <p>No movies found</p> // Display message if no movies match the search
-      ) : (
-        filteredMovies.map((movie) => (
-          <div key={movie.imdbID}> {/* Use imdbID as the unique key */}
-            <h3>{movie.Title}</h3> {/* Display movie title */}
-          </div>
-        ))
-      )}
+    <div className="container app-container">
+      <h2 className="mb-3">Movie Database</h2>
+      <p>Enjoy browsing movies with a cloud backdrop.</p>
+
+      {/* Search Bar */}
+      <SearchBar onSearch={handleSearch} />
+
+      {/* Movie List */}
+      <div className="movie-list">
+        {filteredMovies.length === 0 ? (
+          <p>No movies found</p>
+        ) : (
+          filteredMovies.map((movie) => (
+            <div key={movie.imdbID} className="movie-card">
+              <h3>{movie.Title}</h3>
+              <img src={movie.Poster} alt={movie.Title} />
+            </div>
+          ))
+        )}
+      </div>
     </div>
   );
 };
+
 
 export default _MovieList;
