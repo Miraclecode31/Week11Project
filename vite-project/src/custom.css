@@ -1,0 +1,20 @@
+/* custom.css */
+.btn-primary {
+  background-color: #ff5733;
+  border-color: #ff5733;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  color: #333;
+}
+body {
+    background-image: url('src/_components/images/sunset-with-house-background.jpg'); /* Replace with actual URL */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh; /* Ensure it covers the whole viewport */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
